@@ -1,11 +1,14 @@
 import socket as socket
+import pickle
+from game import Game
 
 class MySocket:
     def __init__(self):
         self.serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.clientsocket = None
+
     def server(self, port=1234):
-        print("abrindo server")
+        print("opening server")
         self.serverSocket.bind((socket.gethostname(), port))
 
     def clientConnect(self, port, host=socket.gethostname()):
@@ -38,21 +41,36 @@ class MySocket:
         elif(self.clientsocket is None):#client
             print('CLIENT RECEIVING<==')
             msg = self.serverSocket.recv(1024)
+        return msg.decode('utf-8')
 
+    def sendGame(self,game):
+        dict = game.__dict__
+        dict_str=pickle.dumps(dict)
+        print(dict_str)
+
+        if(self.clientsocket is not None):#server
+            print('SERVER SENDING==>')
+            self.clientsocket.send(dict_str)
+        elif(self.clientsocket is None):#client
+            print('CLIENT SENDING==>')
+            self.serverSocket.send(dict_str)
+
+
+    def receiveGame(self):
+        if(self.clientsocket is not None):#server
+            print('SERVER RECEIVING<==')
+            msg = self.clientsocket.recv(1024)
             return msg.decode('utf-8')
 
+        elif(self.clientsocket is None):#client
+            print('CLIENT RECEIVING<==')
+            msg = self.serverSocket.recv(1024)
 
-test=MySocket()
-enter=input("S or C\n")
+        dict=pickle.loads(msg)
 
-if(enter in ["s","S"]):
-    test.server()
-    test.serverConnect()
+        classAux=Game()
 
-    test.send("bom dia")
-    print(test.receive())
+        for name,content in dict.items():
+            setattr(classAux,name,content)
 
-elif(enter in ["c","C"]):
-    test.clientConnect(1234)
-    print(test.receive())
-    test.send("boa noite")
+        return(classAux)
