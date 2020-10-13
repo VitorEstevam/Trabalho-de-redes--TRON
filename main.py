@@ -13,7 +13,6 @@ gameDraw = GameDraw(screen)
 game = Game()
 #endregion
 
-
 #region gameloop
 running=True
 gameDraw.updateScreen(game)
@@ -25,11 +24,10 @@ while running:
         if event.type == pygame.KEYDOWN:
             print("APERTOU")
             print(event.key)
-            game.moveplayer1(event.key)
+            game.moveplayer2(event.key)
             gameDraw.updateScreen(game)
             pygame.display.flip()
 
 pygame.quit()
 #endregion
-
 

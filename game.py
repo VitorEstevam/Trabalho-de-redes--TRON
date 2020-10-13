@@ -9,6 +9,7 @@ class Game:
         self.player2={"x":5,"y":5}
 
         self.player1Tail=[]
+        self.player2Tail=[]
     
     def moveplayer1(self,direction):
         pos={'x':self.player1['x'], "y":self.player1['y']}
@@ -26,12 +27,17 @@ class Game:
             self.player1["y"]+=1
 
 
-    # def moveplayer2(self,direction):
-    #     if(direction== "left"):
-    #         self.player2.x-=1
-    #     elif(direction== "right"):
-    #         self.player2.x+=1
-    #     elif(direction==  "up"):
-    #         self.player2.y-=1
-    #     elif(direction==  "down"):
-    #         self.player2.y+=1
+    def moveplayer2(self,direction):
+        pos={'x':self.player2['x'], "y":self.player2['y']}
+        if(pos not in self.player2Tail):
+            self.player2Tail.append(pos)
+        print(self.player2Tail)
+
+        if(direction== self.left):
+            self.player2["x"]-=1
+        elif(direction== self.right):
+            self.player2["x"]+=1
+        elif(direction== self.up):
+            self.player2["y"]-=1
+        elif(direction==  self.down):
+            self.player2["y"]+=1
