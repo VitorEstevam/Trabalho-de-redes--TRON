@@ -46,24 +46,23 @@ class MySocket:
     def sendGame(self,game):
         dict = game.__dict__
         dict_str=pickle.dumps(dict)
-        print(dict_str)
+        # print(dict_str)
 
         if(self.clientsocket is not None):#server
-            print('SERVER SENDING==>')
+            print('SERVER SENDING game==>')
             self.clientsocket.send(dict_str)
         elif(self.clientsocket is None):#client
-            print('CLIENT SENDING==>')
+            print('CLIENT SENDING game==>')
             self.serverSocket.send(dict_str)
 
 
     def receiveGame(self):
         if(self.clientsocket is not None):#server
-            print('SERVER RECEIVING<==')
+            print('SERVER RECEIVING game<==')
             msg = self.clientsocket.recv(1024)
-            return msg.decode('utf-8')
 
         elif(self.clientsocket is None):#client
-            print('CLIENT RECEIVING<==')
+            print('CLIENT RECEIVING game<==')
             msg = self.serverSocket.recv(1024)
 
         dict=pickle.loads(msg)
