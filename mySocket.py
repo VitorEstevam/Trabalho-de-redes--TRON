@@ -3,13 +3,14 @@ import pickle
 from game import Game
 
 class MySocket:
-    def __init__(self):
+    def __init__(self,port=1234):
         self.serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.clientsocket = None
+        self.port=port
 
-    def server(self, port=1234):
+    def server(self) :
         print("opening server")
-        self.serverSocket.bind((socket.gethostname(), port))
+        self.serverSocket.bind((socket.gethostname(), self.port))
 
     def clientConnect(self, port, host=socket.gethostname()):
         self.serverSocket.connect((host, port))

@@ -1,23 +1,36 @@
+import pygame, sys
+
 from game import Game
 from gameDraw import GameDraw
 from mySocket import MySocket
-import pygame, sys
+from window import Window
+
 
 #region game init
 gameDraw = GameDraw()
 game = Game()
 sock=MySocket()
+window = Window()
 
 type=""
-sel=input("S or C\n")
+sel=window.playerType()
 if(sel in ["s","S"]):
     type="s"
     sock.server()
+    window.showPort(sock.port)
     sock.serverConnect()
+    window.showColor("VERMELHO")
 
 elif(sel in ["c","C"]):
     type="c"
-    sock.clientConnect(1234)
+
+    endereco,porta = window.askPort()
+    if(endereco==""):
+        sock.clientConnect(1234)
+    else:
+        sock.clientConnect(1234,endereco)
+
+    window.showColor("AZUL")
 #endregion
 
 #region gameloop
@@ -38,15 +51,18 @@ while running:
                         game.moveplayer1(event.key)
                         gameDraw.updateScreen(game)
                         pygame.display.flip()
-
+                        game.checkPlayerOverTail()
+                        #send game
                         sock.sendGame(game)
 
                 elif(game.turn=="player2"):
                     game=sock.receiveGame()
                     gameDraw.updateScreen(game)
                     pygame.display.flip()
-                    
+                    #clean event list
                     pygame.event.clear()
+                    #update game win-defeat state
+                    game.checkPlayerOverTail()
 
             if(type=="c"):
                 if(game.turn=="player2"): #turno do player 2
@@ -55,23 +71,23 @@ while running:
                         game.moveplayer2(event.key)
                         gameDraw.updateScreen(game)
                         pygame.display.flip()
-
+                        #update game win-defeat state
+                        game.checkPlayerOverTail()
+                        #send game
                         sock.sendGame(game)
                 
                 elif(game.turn=="player1"):
                     game=sock.receiveGame()
+                    #update visuals
                     gameDraw.updateScreen(game)
                     pygame.display.flip()
-
+                    #clean event list
                     pygame.event.clear()
-
-
-
-            # game.checkPlayerOverTail()
+                    #update game win-defeat state
+                    game.checkPlayerOverTail()
+    
         else:
-            print(f"{game.winner} winned the game!\n press ANY KEY in game to close")
-            if (event.type == pygame.KEYDOWN):
-                running=False
+            running=window.endGame(game.winner)
 
 pygame.quit()
 #endregion

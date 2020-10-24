@@ -1,4 +1,5 @@
 import pygame, sys
+from pygame.locals import *
 
 class GameDraw:
     player1background=[222, 191, 191]
@@ -40,6 +41,5 @@ class GameDraw:
         #players
         self.drawPlayer(game.player1, self.player1color)
         self.drawPlayer(game.player2, self.player2color)
-
         #grid
         self.drawGrid(self.player1color if game.turn=="player1" else self.player2color)
